@@ -34,7 +34,7 @@ body {
   position: absolute;
   right: 5vw;
   top: 5vh;
-  width: 32vw;
+  width: 30vw;
   height: 85vh;
   border: 5px solid rgba(200, 200, 200, .3);
   border-radius: 20px;
@@ -58,7 +58,7 @@ body {
   top: 15vh;
   width: 94%;
   height: 55vh;
-  background: linear-gradient(to right, rgba(255, 255, 255, .3), rgba(118, 177, 188, .8));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(118, 177, 188, .8));
 }
 
 #content::before {
@@ -81,6 +81,47 @@ body {
   background-color: rgba(116, 132, 138, .6);
 }
 
+#keyboard {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+#input {
+  border: solid rgba(130, 234, 215, .6) 2px;
+  width: 80%;
+  margin: 10% 0 10% 10%;
+  height: 7vh;
+  background-color: rgba(255, 255, 255, 0.2);
+  line-height: 7vh;
+  font-size: 30px;
+  letter-spacing: 40px;
+  box-sizing: border-box;
+}
+
+.row {
+  position: relative;
+  overflow: hidden;
+  width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 10px 0;
+  display: flex;
+}
+
+.col {
+  float: left;
+  /* width: 30%; */
+  margin: 1%;
+  border: solid rgba(130, 234, 215, .6) 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 6vh;
+  line-height: 6vh;
+  box-sizing: border-box;
+  flex: 1;
+  cursor: pointer;
+}
+
 #footer {
   width: 90%;
   height: 5vh;
@@ -92,4 +133,12 @@ body {
   font-size: 25px;
   text-align: center;
   line-height: 5vh;
+  cursor: pointer;
+}
+
+#canvas {
+  position: absolute;
+  left: 15vw;
+  top: 13vh;
+  z-index: -2;
 }
