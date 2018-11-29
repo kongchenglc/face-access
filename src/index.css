@@ -145,6 +145,11 @@ body {
   z-index: -2;
 }
 
+#canvas2 {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+}
 
 #message {
   margin: 50px 0;

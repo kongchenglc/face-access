@@ -8,7 +8,55 @@
 </head>
 
 <body>
+  <div class="Content-Main">
 
+    <form class="form-userInfo">
+      <h1>保卫处后台管理</h1>
+      <hr>
+      <h2>连接状态：<small id="status"></small></h2>
+      <hr>
+      <h2>录入个人信息：</h2>
+      <span class="text1">请在文本框中完善您的个人信息：</span>
+
+      <label id="img-box">
+        <span>请选择照片：</span>
+        <input type="file" id="file" class="fileInput" /><br>
+        <img id="previewimg" width="100px" height="150px" /><br>
+      </label>
+
+      <label>
+        <span>姓名：</span>
+        <input type="text" name="name" placeholder="Your Full Name">
+      </label>
+      <label class="Main-sex">
+        <span>性别：</span>
+        <label><input name="sex" type="radio" class="man">男</label>
+        <label><input name="sex" type="radio" class="women">女</label>
+      </label>
+      <label class="Main-sex">
+        <span>身份：</span>
+        <label><input name="identity" type="radio" class="master">业主</label>
+        <label><input name="identity" type="radio" class="tenant">租户</label>
+      </label>
+      <label>
+        <span>门牌号：</span>
+        <input type="text" name="doorId" placeholder="xxxx">
+      </label>
+      <label>
+        <span>联系方式：</span>
+        <input type="text" name="phone" placeholder="Please input 11 number">
+      </label>
+      <label>
+        <span>备注：</span>
+        <textarea id="message" name="message" placeholder="Your message to us"></textarea>
+      </label>
+      <label>
+        <span></span>
+        <input id="submit" type="button" class="button" value="提交">
+      </label>
+    </form>
+  </div>
+  <canvas style="display: none;"></canvas>
 </body>
 
 </html>

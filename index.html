@@ -17,9 +17,8 @@
         业主人脸识别系统
       </header>
       <div id="content">
-
         
-        <div id="keyboard" style="display: none;">
+        <div id="keyboard">
           <div id="output">
             &nbsp;
           </div>
@@ -47,15 +46,15 @@
           </div>
         </div>
 
-        <div id="message">
+        <div id="message" style="display: none;">
           <div id="person-pic">
             <img id="pic" src="./src/static/personPic.jpg">
           </div>
           <div id="person-msg">
-            <p>
+            <p class="msg-name">
               李先生
             </p>
-            <p>
+            <p class="msg-door">
               1021室
             </p>
             <div id="logo"></div>
@@ -78,6 +77,7 @@
   </div> -->
 
   <canvas id="canvas"></canvas>
+  <canvas id="canvas2"></canvas>
 </body>
 
 </html>

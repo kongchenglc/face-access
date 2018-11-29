@@ -1,10 +1,17 @@
 import '@/index.css';
+import defaultImg from '@/static/personPic.jpg'
 import axios from 'axios'
 
-let video = document.getElementById('video');
-let canvas = document.getElementById('canvas');
-let context = canvas.getContext('2d');
-let body = document.body
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const canvas2 = document.getElementById('canvas2');
+const messageCard = document.querySelector('#message');
+const keyboardCard = document.querySelector('#keyboard');
+const personMsgName = document.querySelector('.msg-name')
+const personMsgDoorId = document.querySelector('.msg-door')
+const context = canvas.getContext('2d');
+const context2 = canvas2.getContext('2d');
+const body = document.body
 
 //访问用户媒体设备的兼容方法
 function getUserMedia(constraints, success, error) {
@@ -27,7 +34,6 @@ function success(stream) {
 	//兼容webkit核心浏览器
 	let CompatibleURL = window.URL || window.webkitURL;
 	//将视频流设置为video元素的源
-	console.log(stream);
 
 	//video.src = CompatibleURL.createObjectURL(stream);
 	video.srcObject = stream;
@@ -75,25 +81,42 @@ function getFaceBase64() {
 	return canvas.toDataURL("image/png")
 }
 
+
+
 // 轮询发送图片
-(function () {
-	// setInterval(() => {
-	// 	axios.post(host_port + '/intelligentEntranceGuard/parserPhoto.do', {
-	// 		faceBase64: getFaceBase64()
-	// 	}, {
-	// 		headers: {
-	// 			'Content-Type': 'application/x-www-form-urlencoded'
-	// 		}
-	// 	}).then(data => {
-	// 		console.log(data)
-	// 	}).catch(err => {
-	// 		console.log(err)
-	// 	})
-	// }, 5000)
-})()
+! function() {
+	return setInterval(() => {
+		axios.post(host_port + '/intelligentEntranceGuard/parserPhoto.do', {
+			faceBase64: getFaceBase64()
+		}, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		}).then(data => {
+			if (data.data.base64) {
+				accessSuccess(data.data)
+			} 
+		}).catch(err => {
+			console.log(err)
+		})
+	}, 3000);
+}()
 
-
-
+//识别成功
+function accessSuccess(data) {
+	pic.src = data.base64
+	personMsgName.innerHTML = data.name
+	personMsgDoorId.innerHTML = data.doorId
+	keyboardCard.style.display = 'none'
+	messageCard.style.display = 'block'
+	setTimeout(() => {
+		personMsgName.innerHTML = ''
+		personMsgDoorId.innerHTML = ''
+		keyboardCard.style.display = 'block'
+		messageCard.style.display = 'none'
+		pic.src = defaultImg
+	}, 5000);
+}
 
 // 用户交互
 let inputBoard = document.querySelector('#board'),
@@ -115,15 +138,76 @@ cleanButton.addEventListener('click', event => {
 // 呼叫业主
 callButton.addEventListener('click', event => {
 	let nums = output.innerText.split('')
-
 	nums.shift()
+
 	if (nums.length === 4) {
-		axios.post(host_port + '', {})
-		console.log(nums)
+		let imgBase64 = getVideoImg()
+		axios.post(host_port + '/intelligentEntranceGuard/call.do', {
+			doorId: nums.join(''),
+			base64: imgBase64
+		}).then(data => {
+			if (data.data.base64) {
+				accessSuccess(data.data)
+			} 
+		}).catch(err => {
+			console.log(err)
+		})
+	} else {
+		alert('输入门牌号')
 	}
 })
+
+function getVideoImg() {
+	console.log(canvas2.toDataURL("image/png"))
+	context2.drawImage(video, 0, 0, canvas2.width, canvas2.height);
+	return canvas2.toDataURL("image/png")
+}
 
 // 呼叫保卫处
 callGatekeeper.addEventListener('click', event => {
 	console.log('call for gatekeeper!')
 })
+
+
+
+// websocket
+let websocket = null
+//判断当前浏览器是否支持WebSocket
+if ('WebSocket' in window) {
+	websocket = new WebSocket("wss://192.168.43.99:8443/intelligentEntranceGuard/websocket");
+} else {
+	alert('当前浏览器 Not support websocket')
+}
+//连接发生错误的回调方法
+websocket.onerror = function () {
+	setMessageInnerHTML("WebSocket连接发生错误");
+};
+//连接成功建立的回调方法
+websocket.onopen = function () {
+	setMessageInnerHTML("WebSocket连接成功");
+}
+//接收到消息的回调方法
+websocket.onmessage = function (event) {
+	setMessageInnerHTML(event.data);
+	if(event.data === 'access') {
+		alert('正在开门。。。')
+	} else if (event.data === 'reject') {
+		alert('对方拒绝进入！')
+	}
+}
+//连接关闭的回调方法
+websocket.onclose = function () {
+	setMessageInnerHTML("WebSocket连接关闭");
+}
+//监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+window.onbeforeunload = function () {
+	closeWebSocket();
+}
+//将消息显示在网页上
+function setMessageInnerHTML(data) {
+	console.log(data)
+}
+//关闭WebSocket连接
+function closeWebSocket() {
+	websocket.close();
+}
