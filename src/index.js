@@ -1,4 +1,4 @@
-import '@/main.css';
+import '@/index.css';
 import axios from 'axios'
 
 let video = document.getElementById('video');
@@ -40,18 +40,16 @@ function error(error) {
 
 // 全屏处理 & 按比例计算偏移量
 let offsetX = 0,
-		offsetY = 0
+	offsetY = 0
 body.style.width = '100vw'
 body.style.height = '100vh'
-if(body.offsetWidth * 480 < (body.offsetHeight * 640)) {
+if (body.offsetWidth * 480 < (body.offsetHeight * 640)) {
 	video.style.height = '100vh'
 	offsetX = (body.offsetHeight * 64 / 48 - body.offsetWidth) / 2
 } else {
 	video.style.width = '100vw'
 	offsetY = (body.offsetWidth * 48 / 64 - body.offsetHeight) / 2
 }
-
-
 
 // 访问摄像头，显示到video
 if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
@@ -63,21 +61,69 @@ if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.w
 	alert('不支持访问用户媒体');
 }
 
-// 获取头像位置图片
-function getFace() {	
+// 获取头像位置图片base64
+function getFaceBase64() {
 	let facePic = document.querySelector('#faceCover')
-	canvas.width = facePic.offsetWidth
-	canvas.height = facePic.offsetHeight
 	// 视频帧宽和帧高： 640 480
 	let scaleW = 640 / video.offsetWidth,
-			scaleH = 480 / video.offsetHeight
-
+		scaleH = 480 / video.offsetHeight
+	canvas.width = facePic.offsetWidth
+	canvas.height = facePic.offsetHeight
+	// 绘制头像到canvas
 	context.drawImage(video, (facePic.offsetLeft + offsetX) * scaleW, (facePic.offsetTop + offsetY) * scaleH, facePic.offsetWidth * scaleW, facePic.offsetHeight * scaleH, 0, 0, facePic.width, facePic.height);
+
+	return canvas.toDataURL("image/png")
 }
 
 // 轮询发送图片
-(function() {
-	setInterval(() => {
-		getFace()
-	}, 2000)
+(function () {
+	// setInterval(() => {
+	// 	axios.post(host_port + '/intelligentEntranceGuard/parserPhoto.do', {
+	// 		faceBase64: getFaceBase64()
+	// 	}, {
+	// 		headers: {
+	// 			'Content-Type': 'application/x-www-form-urlencoded'
+	// 		}
+	// 	}).then(data => {
+	// 		console.log(data)
+	// 	}).catch(err => {
+	// 		console.log(err)
+	// 	})
+	// }, 5000)
 })()
+
+
+
+
+// 用户交互
+let inputBoard = document.querySelector('#board'),
+	output = document.querySelector('#output'),
+	cleanButton = document.querySelector('.clean'),
+	callButton = document.querySelector('.call'),
+	callGatekeeper = document.querySelector('#gatekeeper')
+
+inputBoard.addEventListener('click', event => {
+	if (event.target.className === 'col' && output.innerText.length < 5) {
+		output.innerText += Number(event.target.innerText)
+	}
+})
+
+cleanButton.addEventListener('click', event => {
+	output.innerHTML = '&nbsp;'
+})
+
+// 呼叫业主
+callButton.addEventListener('click', event => {
+	let nums = output.innerText.split('')
+
+	nums.shift()
+	if (nums.length === 4) {
+		axios.post(host_port + '', {})
+		console.log(nums)
+	}
+})
+
+// 呼叫保卫处
+callGatekeeper.addEventListener('click', event => {
+	console.log('call for gatekeeper!')
+})

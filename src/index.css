@@ -28,6 +28,7 @@ body {
     linear-gradient(to left, rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)) right bottom no-repeat,
     linear-gradient(to left, rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)) right bottom no-repeat;
   background-size: 5px 20px, 20px 5px, 5px 20px, 20px 5px;
+  user-select: none;
 }
 
 #card {
@@ -38,7 +39,8 @@ body {
   height: 85vh;
   border: 5px solid rgba(200, 200, 200, .3);
   border-radius: 20px;
-  background-color: rgba(100, 100, 100, .3)
+  background-color: rgba(100, 100, 100, .3);
+  user-select: none;
 }
 
 #header {
@@ -87,7 +89,7 @@ body {
   text-align: center;
 }
 
-#input {
+#output {
   border: solid rgba(130, 234, 215, .6) 2px;
   width: 80%;
   margin: 10% 0 10% 10%;
@@ -122,7 +124,7 @@ body {
   cursor: pointer;
 }
 
-#footer {
+#gatekeeper {
   width: 90%;
   height: 5vh;
   position: absolute;
@@ -141,4 +143,65 @@ body {
   left: 15vw;
   top: 13vh;
   z-index: -2;
+}
+
+
+#message {
+  margin: 50px 0;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, .3);
+}
+
+#person-pic {
+  width: 60%;
+  overflow: hidden;
+  float: left;
+}
+
+#pic {
+  width: 100%;
+}
+
+#person-msg {
+  position: relative;
+  float: left;
+  width: 40%;
+  padding-top: 50px;
+}
+
+#person-msg>p {
+  text-align: center;
+  height: 25px;
+  font-size: 25px;
+  line-height: 25px;
+}
+
+#logo {
+  position: absolute;
+  border: 5px rgba(130, 234, 215, .8) solid;
+  width: 70%;
+  padding-top: 70%;
+  border-radius: 50%;
+  margin-left: 11%;
+}
+
+#logo-msg {
+  position: absolute;
+  width: 100%;
+  bottom: -45%;
+  z-index: 1;
+}
+
+#logo-msg>small {
+  display: block;
+  text-align: center;
+}
+
+#logo-msg>p {
+  text-align: center;
+  margin: 0;
+  font-size: 23px;
+  background-image: linear-gradient(to right, rgba(130, 234, 215, .8), rgba(106, 179, 203, .8));
+  -webkit-background-clip:text;
+  color: transparent;
 }

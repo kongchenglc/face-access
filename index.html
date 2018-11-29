@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>人脸识别门禁系统</title>
+  <title>人脸识别门禁系统门禁端</title>
 </head>
 
 <body>
@@ -17,9 +17,11 @@
         业主人脸识别系统
       </header>
       <div id="content">
-        <div id="keyboard">
-          <div id="input">
-            &nbsp;1106
+
+        
+        <div id="keyboard" style="display: none;">
+          <div id="output">
+            &nbsp;
           </div>
           <div id="board">
             <div class="row">
@@ -38,15 +40,35 @@
               <div class="col">9</div>
             </div>
             <div class="row">
-              <div class="col">清除</div>
+              <div class="col clean">清除</div>
               <div class="col">0</div>
-              <div class="col">呼叫</div>
+              <div class="col call">呼叫</div>
             </div>
           </div>
         </div>
+
+        <div id="message">
+          <div id="person-pic">
+            <img id="pic" src="./src/static/personPic.jpg">
+          </div>
+          <div id="person-msg">
+            <p>
+              李先生
+            </p>
+            <p>
+              1021室
+            </p>
+            <div id="logo"></div>
+            <div id="logo-msg">
+              <small>业主</small>
+              <p>已识别</p>
+            </div>
+          </div>
+          <div id="last-time"></div>
+        </div>
       </div>
       <div class="line"></div>
-      <footer id="footer">
+      <footer id="gatekeeper">
         呼叫保卫处
       </footer>
     </div>

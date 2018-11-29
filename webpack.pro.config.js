@@ -6,13 +6,21 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     mode:'production',
     entry: {
-        bundle: path.resolve(__dirname, './src/main.js'),
+        index: path.resolve(__dirname, './src/index.js'),
+        home: path.resolve(__dirname, './src/home.js'),
+        gatekeeper: path.resolve(__dirname, './src/gatekeeper.js'),
         //添加要打包在vendor里面的库
         //vendors: ['react','react-dom','react-router'],
     },
     output: {
         path: path.resolve(__dirname, './build'),
         filename: '[name][hash].js'
+    },
+    resolve: {
+        // 路径别名
+        alias: {
+            '@': path.resolve('src'),
+        }
     },
     module: {
         rules: [
@@ -67,33 +75,51 @@ module.exports = {
                         }
                     }
                 ]
+            },
+            {
+                test: /\.html$/,
+                loader: 'html-loader'
             }
         ]
     },
     performance: {
         hints: false
     },
-    optimization: {
-        splitChunks: {
-          cacheGroups: {
-            commons: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all'
-            }
-          }
-        }
-    },
-    // devtool: 'source-map',
+    // optimization: {          //优化拆分块
+    //     splitChunks: {
+    //       cacheGroups: {
+    //         commons: {
+    //           test: /[\\/]node_modules[\\/]/,
+    //           name: 'vendors',
+    //           chunks: 'all'
+    //         }
+    //       }
+    //     }
+    // },
+    // // devtool: 'source-map',
     plugins: [
         new webpack.DefinePlugin({//设置成production去除警告
             'process.env':{
                 NODE_ENV: JSON.stringify("production")
-            }
+            },
+            host_port: '"https://192.168.43.99:8443"'
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './index.html', 
+            chunks: ['index'],
+            inject: 'body' 
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'home.html',
+            template: './home.html', 
+            chunks: ['home'],
+            inject: 'body' 
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'gatekeeper.html',
+            template: './gatekeeper.html', 
+            chunks: ['gatekeeper'],
             inject: 'body' 
         }),
         new CleanWebpackPlugin(['dist',

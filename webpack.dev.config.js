@@ -6,14 +6,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     mode:'development',
     entry: {
-        bundle: path.resolve(__dirname, './src/main.js')
+        index: path.resolve(__dirname, './src/index.js'),
+        home: path.resolve(__dirname, './src/home.js'),
+        gatekeeper: path.resolve(__dirname, './src/gatekeeper.js'),
     },
     output: {
         path: path.resolve(__dirname, './build'),
         filename: '[name].js'
     },
     devServer: {
-        host: '0.0.0.0',
+        host: '127.0.0.1',
         port: 8080
     },
     resolve: {
@@ -90,11 +92,25 @@ module.exports = {
         new webpack.DefinePlugin({//设置成production去除警告
             'process.env':{
                 NODE_ENV: JSON.stringify("production")
-            }
+            },
+            host_port: '"https://192.168.43.99:8443"'
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './index.html', 
+            chunks: ['index'],
+            inject: 'body' 
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'home.html',
+            template: './home.html', 
+            chunks: ['home'],
+            inject: 'body' 
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'gatekeeper.html',
+            template: './gatekeeper.html', 
+            chunks: ['gatekeeper'],
             inject: 'body' 
         }),
         new CleanWebpackPlugin(['dist',
