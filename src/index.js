@@ -125,51 +125,62 @@ function getFaceBase64() {
 	return canvas.toDataURL("image/png")
 }
 
-let intervalId = loopUpload()
+let requestNum = 0;
+let beforeName = null;
+let intervalId = null;
 // 轮询发送图片
-function loopUpload() {
-	console.log('loopUploadloopUploadloopUpload')
-	clearInterval(intervalId)
-	return setInterval(() => {
-		axios.post(host_port + '/intelligentEntranceGuard/parserPhoto.do', {
-			faceBase64: getFaceBase64()
-		}, {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		}).then(data => {
-			if (data.data.base64) {
-				accessSuccess(data.data)
-			} else {
-				intervalId = loopUpload()
-			}
-		}).catch(err => {
-			intervalId = loopUpload()
-			console.log(err)
-		})
-	}, 3000);
-}
+! function () {
+	setInterval(() => {
+		if (requestNum <= 5) {
+			requestNum++
+			console.log('loopUploadloopUploadloopUpload')
+			axios.post(host_port + '/intelligentEntranceGuard/parserPhoto.do', {
+				faceBase64: getFaceBase64()
+			}, {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			}).then(data => {
+				requestNum--
+				if(beforeName === data.data.name) {
+					clearInterval(intervalId)
+					intervalId = setInterval(() => beforeName = data.data.name, 60000)
+				}
+				if (data.data.base64 && beforeName !== data.data.name) {
+					clearInterval(intervalId)
+					beforeName = data.data.name
+					intervalId = setInterval(() => beforeName = data.data.name, 60000)
+					accessSuccess(data.data)
+				}
+			}).catch(err => {
+				requestNum--
+				console.log(err)
+			})
+		}
+	}, 5000);
+}()
 
-let timeoutId = null
+let opening = false
 //识别成功
 function accessSuccess(data) {
-	console.log('successsuccesssuccess')
-	clearTimeout(timeoutId)
-	pic.src = data.base64
-	personMsgName.innerHTML = data.name
-	personMsgDoorId.innerHTML = data.doorId
-	keyboardCard.style.display = 'none'
-	messageCard.style.display = 'block'
-	status.innerHTML = '正在开门...'
-	timeoutId = setTimeout(() => {
-		personMsgName.innerHTML = ''
-		personMsgDoorId.innerHTML = ''
-		keyboardCard.style.display = 'block'
-		messageCard.style.display = 'none'
-		status.innerHTML = ''
-		pic.src = defaultImg
-		intervalId = loopUpload()
-	}, 4000);
+	if (!opening) {
+		opening = true
+		pic.src = data.base64
+		personMsgName.innerHTML = data.name
+		personMsgDoorId.innerHTML = data.doorId
+		keyboardCard.style.display = 'none'
+		messageCard.style.display = 'block'
+		status.innerHTML = '正在开门...'
+		setTimeout(() => {
+			personMsgName.innerHTML = ''
+			personMsgDoorId.innerHTML = ''
+			keyboardCard.style.display = 'block'
+			messageCard.style.display = 'none'
+			status.innerHTML = ''
+			pic.src = defaultImg
+			opening = false
+		}, 4000);
+	}
 }
 
 // 用户交互
