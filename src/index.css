@@ -210,3 +210,8 @@ body {
   -webkit-background-clip:text;
   color: transparent;
 }
+
+#status {
+  width: 100%;
+  text-align: center;
+}

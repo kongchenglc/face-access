@@ -9,6 +9,7 @@ const messageCard = document.querySelector('#message');
 const keyboardCard = document.querySelector('#keyboard');
 const personMsgName = document.querySelector('.msg-name')
 const personMsgDoorId = document.querySelector('.msg-door')
+const status = document.querySelector('#status')
 const context = canvas.getContext('2d');
 const context2 = canvas2.getContext('2d');
 const body = document.body
@@ -81,10 +82,11 @@ function getFaceBase64() {
 	return canvas.toDataURL("image/png")
 }
 
-
-
+let intervalId = loopUpload()
 // 轮询发送图片
-! function() {
+function loopUpload() {
+	console.log('loopUploadloopUploadloopUpload')
+	clearInterval(intervalId)
 	return setInterval(() => {
 		axios.post(host_port + '/intelligentEntranceGuard/parserPhoto.do', {
 			faceBase64: getFaceBase64()
@@ -95,27 +97,36 @@ function getFaceBase64() {
 		}).then(data => {
 			if (data.data.base64) {
 				accessSuccess(data.data)
-			} 
+			} else {
+				intervalId = loopUpload()
+			}
 		}).catch(err => {
+			intervalId = loopUpload()
 			console.log(err)
 		})
 	}, 3000);
-}()
+}
 
+let timeoutId = null
 //识别成功
 function accessSuccess(data) {
+	console.log('successsuccesssuccess')
+	clearTimeout(timeoutId)
 	pic.src = data.base64
 	personMsgName.innerHTML = data.name
 	personMsgDoorId.innerHTML = data.doorId
 	keyboardCard.style.display = 'none'
 	messageCard.style.display = 'block'
-	setTimeout(() => {
+	status.innerHTML = '正在开门...'
+	timeoutId = setTimeout(() => {
 		personMsgName.innerHTML = ''
 		personMsgDoorId.innerHTML = ''
 		keyboardCard.style.display = 'block'
 		messageCard.style.display = 'none'
+		status.innerHTML = ''
 		pic.src = defaultImg
-	}, 5000);
+		intervalId = loopUpload()
+	}, 4000);
 }
 
 // 用户交互
@@ -148,7 +159,7 @@ callButton.addEventListener('click', event => {
 		}).then(data => {
 			if (data.data.base64) {
 				accessSuccess(data.data)
-			} 
+			}
 		}).catch(err => {
 			console.log(err)
 		})
@@ -189,7 +200,7 @@ websocket.onopen = function () {
 //接收到消息的回调方法
 websocket.onmessage = function (event) {
 	setMessageInnerHTML(event.data);
-	if(event.data === 'access') {
+	if (event.data === 'access') {
 		alert('正在开门。。。')
 	} else if (event.data === 'reject') {
 		alert('对方拒绝进入！')
