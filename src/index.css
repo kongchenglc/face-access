@@ -14,7 +14,7 @@ body {
   z-index: -1;
 }
 
-#faceCover {
+#faceCover,#anotherFace {
   position: absolute;
   height: 60vh;
   top: 13vh;

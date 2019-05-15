@@ -121,7 +121,7 @@ function getFaceBase64() {
 	canvas.height = facePic.offsetHeight
 	// 绘制头像到canvas
 	context.drawImage(video, (facePic.offsetLeft + offsetX) * scaleW, (facePic.offsetTop + offsetY) * scaleH, facePic.offsetWidth * scaleW, facePic.offsetHeight * scaleH, 0, 0, facePic.width, facePic.height);
-
+	// console.log(canvas.toDataURL("image/png"))
 	return canvas.toDataURL("image/png")
 }
 
